@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: web
+    app.kubernetes.io/instance: temporal
+    app.kubernetes.io/name: temporal
+    app.kubernetes.io/part-of: temporal
+    app.kubernetes.io/version: 1.15.2
+  name: temporal-web
+  namespace: temporal
+spec:
+  ports:
+  - name: http
+    port: 8088
+    protocol: TCP
+    targetPort: http
+  selector:
+    app.kubernetes.io/component: web
+    app.kubernetes.io/instance: temporal
+    app.kubernetes.io/name: temporal
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: web
+    app.kubernetes.io/instance: temporal
+    app.kubernetes.io/name: temporal
+    app.kubernetes.io/part-of: temporal
+    app.kubernetes.io/version: 1.15.2
+  name: temporal-web
+  namespace: temporal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: web
+      app.kubernetes.io/instance: temporal
+      app.kubernetes.io/name: temporal
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: web
+        app.kubernetes.io/instance: temporal
+        app.kubernetes.io/name: temporal
+        app.kubernetes.io/part-of: temporal
+        app.kubernetes.io/version: 1.15.2
+    spec:
+      containers:
+      - env:
+        - name: TEMPORAL_GRPC_ENDPOINT
+          value: temporal-frontend.default.svc:7233
+        image: temporalio/web:1.14.0
+        imagePullPolicy: IfNotPresent
+        name: temporal-web
+        ports:
+        - containerPort: 8088
+          name: http
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/app/server/config.yml
+          name: temporal-web-config
+          subPath: config.yml
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: temporal-web-config
+        name: temporal-web-config
