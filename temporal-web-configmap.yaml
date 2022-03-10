@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  config.yml: |
+    auth:
+      enabled: false
+    routing:
+      default_to_namespace: null
+      issue_report_link: https://github.com/temporalio/web/issues/new/choose
+kind: ConfigMap
+metadata:
+  name: temporal-web-config
+  namespace: temporal
