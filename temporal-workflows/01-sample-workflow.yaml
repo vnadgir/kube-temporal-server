@@ -13,4 +13,7 @@ spec:
           - name: hello
             image: docker.io/vnadgir/hello-temporal
             imagePullPolicy: IfNotPresent
+            env:
+            - name: TEMPORAL_HOST_PORT
+              value: http://temporal-frontend.temporal.svc.cluster.local:7233
           restartPolicy: OnFailure
