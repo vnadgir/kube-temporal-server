@@ -57,7 +57,7 @@ spec:
       containers:
       - env:
         - name: TEMPORAL_GRPC_ENDPOINT
-          value: temporal-frontend.default.svc:7233
+          value: temporal-frontend.temporal.svc.cluster.local:7233
         image: temporalio/web:1.14.0
         imagePullPolicy: IfNotPresent
         name: temporal-web

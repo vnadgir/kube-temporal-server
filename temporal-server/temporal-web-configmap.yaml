@@ -4,7 +4,7 @@ data:
     auth:
       enabled: false
     routing:
-      default_to_namespace: null
+      default_to_namespace: default
       issue_report_link: https://github.com/temporalio/web/issues/new/choose
 kind: ConfigMap
 metadata:
